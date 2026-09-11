@@ -9,8 +9,7 @@ import CreateKatha from './components/CreateKatha';
 import MyRoots from './components/MyRoots';
 import Experience3D from './components/Experience3D';
 import RelicInspector from './components/RelicInspector';
-import WarRoom from './components/WarRoom';
-import BharatShorts from './components/BharatShorts';
+
 export default function App() {
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'explore' | 'characters' | 'create' | 'roots' | '3d-nalanda'
   const [xp, setXp] = useState(150);
@@ -75,13 +74,7 @@ export default function App() {
           <MyRoots onAwardPoints={handleAwardPoints} />
         </div>
       )}
-      {/* View: Chanakya's War Room */}
-      {activeTab === 'warroom' && (
-       <div className="pt-20 animate-fade-in">
-       <WarRoom onAwardPoints={handleAwardPoints} />
-       </div>
-       )}
-
+      
       {/* View 6: 3D Nalanda Metaverse Experience */}
       {activeTab === '3d-nalanda' && (
         <Experience3D
@@ -89,11 +82,7 @@ export default function App() {
           onAwardPoints={handleAwardPoints}
         />
       )}
-      {activeTab === 'shorts' && (
-  <div className="animate-fade-in">
-    <BharatShorts onAwardPoints={handleAwardPoints} />
-  </div>
-)}
+      
 
       {/* Permanent Footer / Integrity Badge */}
       {activeTab !== '3d-nalanda' && (
