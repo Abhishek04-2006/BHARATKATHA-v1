@@ -86,7 +86,6 @@ Bash
 npm run build
 
 ### 📂 Project Structure
-Plaintext
 bharatkatha/
 ├── public/
 │   ├── audio/           # Soundscape tracks (sitar, flute, ambience)
