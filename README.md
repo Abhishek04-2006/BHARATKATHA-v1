@@ -1,122 +1,118 @@
-# 🏛️ BharatKatha (भारतकथा)
-> **Step Inside India's History. Don't Just Learn It.**
+# 🏛️ BharatKatha — Subcontinental Metaverse & Archival Intelligence
 
-BharatKatha is a visual-first, cinematic interactive web platform built for modern digital natives to experience Indian history, architectural heritage, and scholastic philosophy through real-time 3D environments, generative AI, and spatial storytelling.
+> **An immersive, AI-powered cultural preservation engine bringing 2,500 years of Indian history, philosophy, and architectural heritage to life.**
 
----
-
-## 🌟 Core Pillars
-
-The platform is structured around 4 interactive dimensions:
-
-1. **Discover (Interactive Timeline & Epochs)**
-   - 2,500 years of subcontinental lore scrubbed across 4 distinct epochs: *Ancient Era (500 BCE – 600 CE)*, *Medieval Golden Age (600 CE – 1526 CE)*, *Colonial Era (1526 CE – 1857 CE)*, and the *Freedom Movement (1857 CE – 1947 CE)*.
-   - Dynamic cinematic ambient video backgrounds that shift with each era.
-   - Curated scientific, architectural, and socio-political milestones.
-
-2. **Experience (3D Nalanda Metaverse)**
-   - First-person WASD exploration of 5th-century Nalanda Mahavihara built with Three.js.
-   - Proximity-based discovery triggers around Stupa No. 3, Dharmaganja Library, and the Scholars' Vihara.
-   - Built-in **Photo Mode & Story Exporter**: captures real-time 9:16 vertical Instagram/Snapchat story cards with date stamps and location metadata.
-
-3. **Create (AI Katha Studio)**
-   - 4-step guided narrative generator enabling users to synthesize custom historical chronicles.
-   - Integrates user-chosen eras, protagonists, dilemmas, and architectural settings into walkable manuscripts.
-
-4. **Preserve (Oral Roots Codex)**
-   - Living archive dedicated to crowdsourced hometown traditions, folk songs, and elder memories.
-   - Real-time community submission system with category tags and upvoting.
+BharatKatha bridges traditional historical archives with modern interactive technologies: real-time LLM scholar personas, 3D metaverse explorations, bilingual audio dialectics, dynamic video ambiences, and decentralized community lore.
 
 ---
 
-## ⚡ Key Highlights & Features
+## 🌟 Core Pillars & Features
 
-- **AI Scholars & Voice Synthesis:** Interactive dialogues with historical personas (Chanakya, Aryabhata) powered by real-time client-side Text-to-Speech (TTS) audio narration.
-- **3D Relic Codex:** Procedural Three.js 360° inspector for sacred antiquities (*Ashoka Dharma Chakra*, *Nalanda Royal Seal*, and *Astronomical Astrolabes*) with clickable archaeological hotspots.
-- **Chanakya's War Room:** RPG-style tactical statecraft dilemma simulator evaluating decisions against authentic *Arthashastra* maxims.
-- **Ambient Soundscape Engine:** Global background sitar & bamboo flute audio with an animated visualizer toggle.
-- **Unified Gamification Engine:** Dynamic XP tracker rewarding exploration, artifact inspection, and lore interaction across all modules.
-- **Streamlined Navigation:** Zero-clutter header synced directly with the four main pillars and quick-launch access to the 3D world.
+### 1. 📜 Discover — Timeline Chamber (2,500 Years of Lore)
+* **Epoch-Scrubbing Engine**: Seamlessly transition across four pivotal civilizational eras with synchronized high-definition dynamic video loops and ambient soundscapes.
+* **AI Deep-Dive Archives**: Interactive milestone inspection powered by Google Gemini, unrolling contextual palm-leaf historical insights on demand.
+* **Bilingual Speech Synthesis**: In-browser audio narration of historical events in both Hindi and English.
+* **Gamified Chronology**: Discovery rewards granting explorers **+50 XP** per archival inquiry.
+
+### 2. 🏛️ Converse — Character Studio (Architects of Thought)
+* **Live Historical Dialectics**: Converse in real time with legendary figures:
+  * **Acharya Chanakya (Kautilya)** — Governance, Arthashastra & Realpolitik
+  * **Aryabhata I** — Celestial mechanics, zero, trigonometry & spherical earth
+  * **Xuanzang (Hiuen Tsang)** — Silk Route pilgrimage & Nalanda scholarship
+  * **Maharshi Sushruta** — Ancient surgery, anatomical ethics & rhinoplasty
+  * **Gargi Vachaknavi** — Upanishadic philosophy & debates of Videha
+  * **Bhaskara II** — Gravity principles, calculus foundations & Lilavati riddles
+* **Dual-Language Interaction (Hindi / English)**: Switch fluently between English and Shuddh Hindi dialectics.
+* **Speech-to-Text & Voice Synthesis**: Speak directly using Web Speech API mic recognition and listen to vocalized scholar responses.
+
+### 3. 🏺 Inspect — 3D Nalanda & Relic Vault
+* **Spatial Relic Inspection**: Examine ancient artifacts, inscriptions, and seals with interactive 3D inspection.
+* **Codex Progression**: Discovering relics unlocks badges, increases knowledge tiers, and stores progression securely in MongoDB Atlas.
+
+### 4. 🪶 Create & Preserve — AI Katha Studio & Oral Roots
+* **Katha AI Studio**: Generate structured historical manuscripts with customizable tone and era constraints.
+* **Oral Roots Vault**: Community-driven crowdsourcing portal for indigenous folklore, village narratives, and family oral histories with community upvoting.
+
+### 5. 🏆 BharatKatha Leaderboard & Codex Badging
+* Real-time XP tracking and ranking tiers:
+  * 📜 **Novice Chronicler** (0 - 249 XP)
+  * 🪷 **Nalanda Scholar** (250 - 499 XP)
+  * 🏛️ **Imperial Historian** (500 - 999 XP)
+  * 👑 **Codex Master** (1000+ XP)
+* Global leaderboard modal tracking discovered relics and contribution points.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
-- **Core Framework:** React 18 + Vite
-- **Styling & UI:** Tailwind CSS, Obsidian/Gold Glassmorphism Design System
-- **3D Graphics:** Three.js (WebGL rendering, procedural meshes, lighting, and camera controllers)
-- **Icons:** Lucide React
-- **Audio & Speech:** Web Speech API (`window.speechSynthesis`) + HTML5 Audio Engine
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend** | React 18, Vite, Tailwind CSS, Lucide Icons, Three.js / Canvas |
+| **Speech & Audio** | Web Speech API (`SpeechRecognition` & `SpeechSynthesis`) |
+| **Backend** | Node.js, Express.js, RESTful Architecture |
+| **Database** | MongoDB Atlas, Mongoose ORM |
+| **Generative AI** | Google Gemini 2.5 Flash API |
+| **Authentication** | JSON Web Tokens (JWT), bcrypt.js, LocalStorage Session Sync |
+| **Hosting & CI/CD** | Frontend on **Vercel** / Backend on **Render** |
 
 ---
 
-## 🚀 Getting Started
+## 📂 Architecture & Directory Structure
 
-### Prerequisites
-- Node.js (v18 or higher recommended)
-- npm or yarn
+```text
+bharatkatha/
+├── public/
+│   ├── videos/              # Looping ambient epoch backgrounds
+│   └── favicon.ico
+├── server/
+│   ├── config/              # MongoDB connection
+│   ├── controllers/         # Auth, Character, Katha & Timeline controllers
+│   ├── middleware/          # JWT auth protection
+│   ├── models/              # User, Katha, Relic, and OralRoot schemas
+│   ├── routes/              # Express API routes
+│   └── index.js             # Express server entry point
+├── src/
+│   ├── components/          # React components (Studio, Timeline, Leaderboard, Navbar)
+│   ├── data/                # Static characters and epoch data
+│   ├── services/            # Axios / Fetch API client layer
+│   ├── utils/               # Audio TTS and STT recognizer utilities
+│   ├── App.jsx              # Main view state router
+│   └── main.jsx
+├── vercel.json              # Single Page Application rewrite rules
+├── package.json
+└── README.md
 
-### Installation & Setup
+⚙️ Local Development Setup
+git clone [https://github.com/](https://github.com/)<your-username>/bharatkatha.git
+cd bharatkatha
 
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/Abhishek04-2006/bharatkatha.git](https://github.com/your-username/bharatkatha.git)
-   cd bharatkatha
-Install dependencies:
+Configure Backend Environment
+Create a .env file inside the server/ directory:
+PORT=5000
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/bharatkatha?retryWrites=true&w=majority
+JWT_SECRET=your_ultra_secure_jwt_secret
+GEMINI_API_KEY=your_gemini_api_key
+
+Install Dependencies & Run
+Start Backend Server:
+
+Bash
+cd server
+npm install
+npm run dev
+
+Start Frontend Client:
+Open a separate terminal in the root directory:
 
 Bash
 npm install
-Local Video Assets Setup:
-Create a videos directory inside the public/ directory and place your cinematic loop files:
-
-Plaintext
-public/
-└── videos/
-    ├── ancient.mp4
-    ├── medieval.mp4
-    ├── colonial.mp4
-    └── freedom.mp4
-Run the development server:
-
-Bash
 npm run dev
-Build for production:
+The application will be running at http://localhost:5173.
 
-Bash
-npm run build
+🚀 Deployment Instructions
+Backend (Render): Set Root Directory to server/, build command npm install, start command node index.js, and attach environment variables.
 
-### 📂 Project Structure
-bharatkatha/
-├── public/
-│   ├── audio/           # Soundscape tracks (sitar, flute, ambience)
-│   └── videos/          # Epoch cinematic loop clips
-├── src/
-│   ├── components/
-│   │   ├── Navbar.jsx            # Sleek 4-pillar navigation header
-│   │   ├── Hero.jsx              # Sanctum entry gateway
-│   │   ├── Pillars.jsx           # 4 action-oriented dimension cards
-│   │   ├── TimelineExplorer.jsx  # Epoch timeline with dynamic video backgrounds
-│   │   ├── Experience3D.jsx      # Three.js Nalanda metaverse + Story Exporter
-│   │   ├── RelicInspector.jsx    # 3D 360° artifact inspection chamber
-│   │   ├── CharacterStudio.jsx   # AI scholar chat with TTS voice engine
-│   │   ├── WarRoom.jsx           # Arthashastra scenario dilemma simulator
-│   │   ├── KathaStudio.jsx       # 4-step generative story synthesizer
-│   │   ├── OralRoots.jsx         # Crowdsourced oral folklore archive
-│   │   └── AudioPlayer.jsx       # Global ambient sitar/flute controller
-│   ├── data/
-│   │   ├── timelineData.js       # Epoch milestones & video mappings
-│   │   ├── relicsData.js         # Artifact geometries & lore metadata
-│   │   ├── characters.js         # Scholar dialogues & persona prompts
-│   │   ├── warRoomData.js        # Strategic statecraft dilemma sets
-│   │   └── zones.js              # 3D spatial coordinates & proximity lore
-│   ├── lib/
-│   │   ├── speechEngine.js       # Client-side TTS calibration
-│   │   ├── snapshotEngine.js     # 9:16 vertical canvas capture utility
-│   │   ├── relicModels.js        # Procedural Three.js 3D meshes
-│   │   └── nalandaScene.js       # Vihara, stupa & environment generation
-│   ├── App.jsx                   # Central tab orchestration & XP tracking
-│   └── index.css                 # Obsidian-gold gradients & custom glows
-├── package.json
-└── README.md
-### 📜 License
-Distributed under the MIT License. See LICENSE for more information.
+Frontend (Vercel): Connect repository, set build command npm run build, output folder to dist, and set VITE_API_BASE_URL pointing to your Render backend API.
+
+📜 License
+Developed under the MIT License. Preserving cultural heritage through open technology.
