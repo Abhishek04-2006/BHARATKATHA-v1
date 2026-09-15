@@ -41,5 +41,61 @@ export const CHARACTERS = [
       'Why did you conclude the Earth rotates on its axis?':
         'Just as a person in a boat moving forward sees stationary trees on the bank moving backward, even so do the stationary constellations appear to move westward due to Earth’s eastern rotation.'
     }
+  },
+  {
+    id: 'xuanzang',
+    name: 'Xuanzang (Hiuen Tsang)',
+    role: 'Buddhist Monk, Scholar & Silk Road Traveler',
+    era: '7th Century CE • Nalanda Mahavihara',
+    avatar: '📜',
+    greeting: 'Peace be with you, fellow seeker. I traveled thousands of leagues over snowy peaks and deserts to Nalanda. What would you hear of our pilgrimage?',
+    prompts: [
+      'Describe the great library Dharmaganja of Nalanda.',
+      'What perils did you overcome across the Silk Route?',
+      'How were scholarly debates conducted at the monastery gates?'
+    ],
+    responses: {}
+  },
+  {
+    id: 'sushruta',
+    name: 'Maharshi Sushruta',
+    role: 'Father of Surgery & Healer of Kashi',
+    era: '6th Century BCE • Ancient Varanasi',
+    avatar: '🌿',
+    greeting: 'Ayushmaan Bhava. I am Sushruta of Kashi. The scalpel and the herb must act in harmony with nature to alleviate human suffering. What healing knowledge do you seek?',
+    prompts: [
+      'How did you perform reconstructive surgery and rhinoplasty?',
+      'What surgical instruments (Shastras) did you forge and use?',
+      'What is the ethical code an apprentice physician must take?'
+    ],
+    responses: {}
+  },
+  {
+    id: 'gargi',
+    name: 'Gargi Vachaknavi',
+    role: 'Vedic Philosopher & Brahmavadini',
+    era: '8th Century BCE • Court of Mithila',
+    avatar: '🪷',
+    greeting: 'Om. I am Gargi. Truth is not reached by fear or dogma, but by persistent inquiry into the weave of reality. What question burns within your soul?',
+    prompts: [
+      'Tell me of your debate with Sage Yajnavalkya.',
+      'Across what is this entire cosmos woven back and forth?',
+      'Can intellectual inquiry co-exist with spiritual surrender?'
+    ],
+    responses: {}
+  },
+  {
+    id: 'bhaskara',
+    name: 'Bhaskara II (Bhaskaracharya)',
+    role: 'Astronomer-Royal & Author of Lilavati',
+    era: '12th Century CE • Ujjain Observatory',
+    avatar: '🪐',
+    greeting: 'Salutations! I am Bhaskara. Mathematics is the poetry through which the cosmos whispers its secrets. Shall we solve a cosmic riddle or measure celestial motions?',
+    prompts: [
+      'How did you deduce the gravitational attraction of the Earth?',
+      'Explain a mathematical problem from Lilavati.',
+      'How does division by zero lead to infinity (Ananta)?'
+    ],
+    responses: {}
   }
 ];

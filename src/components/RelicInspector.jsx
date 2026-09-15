@@ -153,7 +153,12 @@ export default function RelicInspector({ onAwardPoints }) {
           return (
             <button
               key={r.id}
-              onClick={() => handleSelectRelic(r)}
+              onClick={() => {
+                handleSelectRelic(r);
+               if (onAwardPoints) {
+               onAwardPoints(100, r.id);
+                     }
+                   }}
               className={`p-4 rounded-2xl border text-left transition-all cursor-pointer flex items-center justify-between ${
                 isSelected
                   ? 'glass-panel border-amber-500/50 bg-amber-500/10 gold-glow'

@@ -1,216 +1,259 @@
-// src/components/MyRoots.jsx
-import React, { useState } from 'react';
-import { SEEDED_ROOTS } from '../data/rootsData';
-import { BookMarked, MapPin, Mic, Plus, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { BookOpen, ThumbsUp, Send, MapPin, Feather, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
+import { fetchOralRoots, submitOralRoot, toggleUpvote } from '../services/api';
 
 export default function MyRoots({ onAwardPoints }) {
-  const [stories, setStories] = useState(SEEDED_ROOTS);
-  const [search, setSearch] = useState('');
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [stories, setStories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
-  // Form State
-  const [hometown, setHometown] = useState('');
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('Oral History');
-  const [excerpt, setExcerpt] = useState('');
+  const [formData, setFormData] = useState({
+    title: '',
+    region: '',
+    eraTag: 'Folk Tradition',
+    story: ''
+  });
 
-  const handleAddStory = (e) => {
-    e.preventDefault();
-    if (!title.trim() || !hometown.trim() || !excerpt.trim()) return;
+  const currentUser = localStorage.getItem('bharatkatha_user')
+    ? JSON.parse(localStorage.getItem('bharatkatha_user'))
+    : null;
 
-    const newEntry = {
-      id: Date.now(),
-      hometown,
-      title,
-      contributor: 'You (Archivist)',
-      category,
-      era: 'Family Oral Record',
-      excerpt,
-      tags: ['Family Archive', 'Digital Relic'],
-      verified: false
-    };
-
-    setStories([newEntry, ...stories]);
-    setShowAddForm(false);
-    setHometown('');
-    setTitle('');
-    setExcerpt('');
-    if (onAwardPoints) onAwardPoints(30);
+  const loadStories = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchOralRoots();
+      setStories(data);
+    } catch (err) {
+      console.error(err);
+      setError('Could not connect to archive codex.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const filteredStories = stories.filter(
-    (s) =>
-      s.hometown.toLowerCase().includes(search.toLowerCase()) ||
-      s.title.toLowerCase().includes(search.toLowerCase()) ||
-      s.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()))
-  );
+  useEffect(() => {
+    loadStories();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!currentUser) {
+      alert('Please login via Explorer Portal to record folk lore.');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      setError('');
+      await submitOralRoot(formData);
+      
+      // Reset form
+      setFormData({ title: '', region: '', eraTag: 'Folk Tradition', story: '' });
+      
+      // Award XP in UI & local state
+      if (onAwardPoints) onAwardPoints(150);
+      const updatedUser = { ...currentUser, xp: (currentUser.xp || 0) + 150 };
+      localStorage.setItem('bharatkatha_user', JSON.stringify(updatedUser));
+
+      await loadStories();
+    } catch (err) {
+      setError(err.message || 'Submission failed.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleUpvote = async (id) => {
+    if (!currentUser) {
+      alert('Login to upvote community chronicles.');
+      return;
+    }
+    try {
+      await toggleUpvote(id);
+      loadStories();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
-    <section id="preserve" className="max-w-6xl mx-auto px-6 py-20 border-t border-neutral-900">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-        <div>
-          <span className="text-xs font-bold tracking-widest text-amber-400 uppercase flex items-center gap-1.5">
-            <BookMarked className="w-3.5 h-3.5" /> Pillar IV • Preserve
-          </span>
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mt-2">
-            My Roots: The Oral History Codex
-          </h2>
-          <p className="text-neutral-400 text-sm mt-1 max-w-xl">
-            Digitize vanishing local folk tales, grandfather lore, and indigenous crafts before they fade from memory.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search town, festival, or craft..."
-            className="bg-neutral-900/80 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 w-64"
-          />
-          <button
-            onClick={() => setShowAddForm(!showAddForm)}
-            className="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs rounded-xl flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
-          >
-            <Plus className="w-4 h-4" /> Preserve Story (+30 XP)
-          </button>
-        </div>
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      {/* Heading */}
+      <div className="text-center mb-10">
+        <span className="text-xs font-mono tracking-widest text-amber-500 uppercase">
+          Living Oral Codex
+        </span>
+        <h1 className="text-3xl md:text-4xl font-serif font-bold text-amber-200 mt-1">
+          Oral Roots Archives
+        </h1>
+        <p className="text-slate-400 text-sm max-w-xl mx-auto mt-2">
+          Preserve untold regional legends and ancestral traditions directly into the permanent historical ledger.
+        </p>
       </div>
 
-      {/* Preservation Modal / Inline Form */}
-      {showAddForm && (
-        <form
-          onSubmit={handleAddStory}
-          className="mb-12 glass-panel p-6 md:p-8 rounded-3xl border border-amber-500/30 animate-fade-in space-y-4"
-        >
-          <div className="flex items-center justify-between border-b border-white/10 pb-3">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-400" /> Archive An Oral Memory
-            </h3>
-            <span className="text-[11px] text-amber-300 font-mono">+30 Points to your Codex Rank</span>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Story Form */}
+        <div className="lg:col-span-1 bg-[#0e1117] border border-amber-500/20 rounded-2xl p-6 h-fit shadow-xl">
+          <div className="flex items-center gap-2 mb-4 text-amber-300 font-serif font-semibold">
+            <Feather className="w-5 h-5 text-amber-400" />
+            <span>Inscribe Tradition</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {!currentUser && (
+            <div className="mb-4 p-3 bg-amber-950/30 border border-amber-500/30 rounded-xl flex items-center gap-2 text-xs text-amber-300">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>Login to record lore & unlock +150 XP.</span>
+            </div>
+          )}
+
+          {error && (
+            <div className="mb-4 p-2.5 bg-red-950/40 border border-red-500/30 rounded-lg text-red-300 text-xs text-center">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">
-                Hometown / Region
+              <label className="block text-[11px] font-mono uppercase text-slate-400 mb-1">
+                Story / Lore Title
               </label>
               <input
                 type="text"
                 required
-                placeholder="e.g. Almora, Uttarakhand"
-                value={hometown}
-                onChange={(e) => setHometown(e.target.value)}
-                className="w-full bg-neutral-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                placeholder="e.g., The Lost Baoli of Bundelkhand"
+                className="w-full bg-[#161a23] border border-slate-700/60 rounded-xl px-3.5 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500"
               />
             </div>
-            <div>
-              <label className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">
-                Title of Tradition or Tale
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. The Sacred Oak Ritual of Binsar"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full bg-neutral-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
-              />
-            </div>
-            <div>
-              <label className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">
-                Category
-              </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-neutral-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
-              >
-                <option>Oral History</option>
-                <option>Folk Song & Music</option>
-                <option>Indigenous Medicine / Food</option>
-                <option>Artisan Craft Guild</option>
-              </select>
-            </div>
-          </div>
 
-          <div>
-            <label className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">
-              Oral Narrative or Grandparent's Account
-            </label>
-            <textarea
-              rows={3}
-              required
-              placeholder="Recount the story as told by your family elders or village chronicles..."
-              value={excerpt}
-              onChange={(e) => setExcerpt(e.target.value)}
-              className="w-full bg-neutral-900 border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-400"
-            />
-          </div>
-
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              onClick={() => setShowAddForm(false)}
-              className="px-4 py-2 text-xs text-neutral-400 hover:text-white"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs rounded-xl transition-all cursor-pointer"
-            >
-              Commit to Living Archive
-            </button>
-          </div>
-        </form>
-      )}
-
-      {/* Story Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {filteredStories.map((story) => (
-          <div
-            key={story.id}
-            className="glass-panel p-6 rounded-2xl border border-white/5 hover:border-amber-500/30 transition-all flex flex-col justify-between group"
-          >
-            <div>
-              <div className="flex items-center justify-between text-[11px] mb-3">
-                <span className="flex items-center gap-1 text-amber-400 font-medium">
-                  <MapPin className="w-3.5 h-3.5" /> {story.hometown}
-                </span>
-                {story.verified ? (
-                  <span className="flex items-center gap-1 text-emerald-400/90 text-[10px]">
-                    <ShieldCheck className="w-3.5 h-3.5" /> Verified Heritage
-                  </span>
-                ) : (
-                  <span className="text-[10px] text-amber-300/80 font-mono">Community Submission</span>
-                )}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[11px] font-mono uppercase text-slate-400 mb-1">
+                  Region
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.region}
+                  onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+                  placeholder="e.g., Bundelkhand, MP"
+                  className="w-full bg-[#161a23] border border-slate-700/60 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500"
+                />
               </div>
 
-              <h4 className="text-lg font-serif font-bold text-white group-hover:text-amber-300 transition-colors">
-                {story.title}
-              </h4>
-              <p className="text-[11px] text-neutral-500 mt-0.5">By {story.contributor} • {story.era}</p>
-
-              <p className="text-xs text-neutral-300 leading-relaxed mt-4 italic bg-neutral-900/40 p-3.5 rounded-xl border border-white/5">
-                "{story.excerpt}"
-              </p>
-            </div>
-
-            <div className="mt-5 pt-4 border-t border-white/5 flex flex-wrap gap-1.5">
-              {story.tags.map((t, i) => (
-                <span
-                  key={i}
-                  className="text-[10px] px-2.5 py-0.5 rounded-md bg-white/5 text-neutral-400 font-mono"
+              <div>
+                <label className="block text-[11px] font-mono uppercase text-slate-400 mb-1">
+                  Era
+                </label>
+                <select
+                  value={formData.eraTag}
+                  onChange={(e) => setFormData({ ...formData, eraTag: e.target.value })}
+                  className="w-full bg-[#161a23] border border-slate-700/60 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500"
                 >
-                  #{t}
-                </span>
-              ))}
+                  <option value="Ancient">Ancient</option>
+                  <option value="Medieval">Medieval</option>
+                  <option value="Colonial">Colonial</option>
+                  <option value="Freedom">Freedom Movement</option>
+                  <option value="Folk Tradition">Folk Tradition</option>
+                </select>
+              </div>
             </div>
+
+            <div>
+              <label className="block text-[11px] font-mono uppercase text-slate-400 mb-1">
+                Oral Narration
+              </label>
+              <textarea
+                rows={5}
+                required
+                value={formData.story}
+                onChange={(e) => setFormData({ ...formData, story: e.target.value })}
+                placeholder="Tell the legend as passed down by ancestors..."
+                className="w-full bg-[#161a23] border border-slate-700/60 rounded-xl px-3.5 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500 resize-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full py-2.5 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-black font-semibold rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-amber-950/40 transition cursor-pointer disabled:opacity-50"
+            >
+              {submitting ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Archiving to MongoDB...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Archive to Codex (+150 XP)</span>
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+
+        {/* Stories List */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h2 className="text-sm font-mono uppercase text-slate-400 tracking-wider flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-amber-400" />
+              Preserved Chronicles ({stories.length})
+            </h2>
           </div>
-        ))}
+
+          {loading ? (
+            <div className="p-8 text-center text-slate-500 font-mono text-xs flex items-center justify-center gap-2">
+              <Loader2 className="w-4 h-4 animate-spin text-amber-500" />
+              Retrieving live scrolls from Atlas...
+            </div>
+          ) : stories.length === 0 ? (
+            <div className="p-12 text-center border border-dashed border-slate-800 rounded-2xl">
+              <Sparkles className="w-8 h-8 text-amber-500/40 mx-auto mb-2" />
+              <p className="text-slate-400 text-sm">Codex is empty.</p>
+              <p className="text-xs text-slate-500 mt-1">Submit the first community lore using the form.</p>
+            </div>
+          ) : (
+            stories.map((item) => (
+              <div
+                key={item._id}
+                className="bg-[#0e1117] border border-slate-800 hover:border-amber-500/30 rounded-2xl p-5 transition shadow-sm"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400/80 bg-amber-950/40 border border-amber-500/30 px-2 py-0.5 rounded-md">
+                      {item.eraTag}
+                    </span>
+                    <h3 className="text-lg font-serif font-bold text-amber-200 mt-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-1">
+                      <MapPin className="w-3 h-3 text-amber-500/70" />
+                      <span>{item.region}</span>
+                      <span className="text-slate-600">•</span>
+                      <span>By {item.contributorName}</span>
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => handleUpvote(item._id)}
+                    className="flex items-center gap-1.5 bg-[#161a23] hover:bg-amber-500/10 border border-slate-700/60 hover:border-amber-500/40 px-3 py-1.5 rounded-xl text-xs text-slate-300 hover:text-amber-300 transition cursor-pointer"
+                  >
+                    <ThumbsUp className="w-3.5 h-3.5" />
+                    <span>{item.upvotes?.length || 0}</span>
+                  </button>
+                </div>
+
+                <p className="text-sm text-slate-300/90 font-serif leading-relaxed mt-4 bg-[#141822]/60 p-4 rounded-xl border border-slate-800/60">
+                  "{item.story}"
+                </p>
+              </div>
+            ))
+          )}
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

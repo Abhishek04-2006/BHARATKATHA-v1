@@ -9,14 +9,34 @@ import CreateKatha from './components/CreateKatha';
 import MyRoots from './components/MyRoots';
 import Experience3D from './components/Experience3D';
 import RelicInspector from './components/RelicInspector';
+import { syncExplorerAchievement } from './services/api';
+
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'explore' | 'characters' | 'create' | 'roots' | '3d-nalanda'
   const [xp, setXp] = useState(150);
 
-  const handleAwardPoints = (points) => {
-    setXp((prev) => prev + points);
-  };
+  const handleAwardPoints = async (points, relicId = null) => {
+  setXp((prev) => prev + points);
+
+  const token = localStorage.getItem('bharatkatha_token');
+  const storedUser = localStorage.getItem('bharatkatha_user');
+
+  if (token && storedUser) {
+    try {
+      const result = await syncExplorerAchievement(relicId, points);
+      const parsed = JSON.parse(storedUser);
+      const updatedUser = {
+        ...parsed,
+        xp: result.xp,
+        unlockedRelics: result.unlockedRelics
+      };
+      localStorage.setItem('bharatkatha_user', JSON.stringify(updatedUser));
+    } catch (err) {
+      console.warn('Background sync failed:', err);
+    }
+  }
+};
 
   return (
     <main className="min-h-screen bg-[#0B0C10] text-neutral-200 relative selection:bg-amber-500/20 overflow-x-hidden">
@@ -24,7 +44,6 @@ export default function App() {
       <Navbar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
-        points={xp} 
       />
 
       {/* --- Dynamic Views Switcher --- */}

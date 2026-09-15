@@ -26,7 +26,7 @@ export const TIMELINE_EPOCHS = [
     id: 'medieval',
     name: 'Medieval Golden Age',
     range: '600 CE – 1526 CE',
-    videoLoop: 'https://assets.mixkit.co/videos/preview/mixkit-candles-and-lamps-in-a-temple-42971-large.mp4',
+    videoLoop: '/videos/medieval.mp4',
     events: [
       {
         year: '1010 CE',
@@ -48,7 +48,7 @@ export const TIMELINE_EPOCHS = [
     id: 'colonial',
     name: 'Colonial Era',
     range: '1526 CE – 1857 CE',
-    videoLoop: 'https://assets.mixkit.co/videos/preview/mixkit-waves-coming-to-the-beach-at-sunset-41484-large.mp4',
+    videoLoop: '/videos/colonial.mp4',
     events: [
       {
         year: '1757 CE',
@@ -70,7 +70,7 @@ export const TIMELINE_EPOCHS = [
     id: 'freedom',
     name: 'Freedom Movement',
     range: '1857 CE – 1947 CE',
-    videoLoop: 'https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-small-fire-40994-large.mp4',
+    videoLoop: '/videos/freedom.mp4',
     events: [
       {
         year: '1857 CE',

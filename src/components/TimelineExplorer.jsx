@@ -1,14 +1,79 @@
 // src/components/TimelineExplorer.jsx
 import React, { useState } from 'react';
 import { TIMELINE_EPOCHS } from '../data/timelineData';
-import { Calendar, MapPin, Sparkles, ArrowRight, Video } from 'lucide-react';
+import { 
+  Calendar, 
+  MapPin, 
+  Sparkles, 
+  ArrowRight, 
+  Video, 
+  BookOpen, 
+  X, 
+  Volume2, 
+  VolumeX, 
+  Loader2 
+} from 'lucide-react';
+import { speakText, stopSpeech } from '../utils/speechVoice';
+import { fetchTimelineInsight } from '../services/api';
 
-export default function TimelineExplorer({ onAwardPoints }) {
+export default function TimelineExplorer({ onAwardPoints, setActiveTab }) {
   const [selectedEpoch, setSelectedEpoch] = useState(TIMELINE_EPOCHS[0]);
+  
+  // Interactive Modal States
+  const [activeModalEvent, setActiveModalEvent] = useState(null);
+  const [insightText, setInsightText] = useState('');
+  const [isLoadingInsight, setIsLoadingInsight] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const handleEpochChange = (epoch) => {
     setSelectedEpoch(epoch);
     if (onAwardPoints) onAwardPoints(10);
+  };
+
+  const handleInspectSources = async (event) => {
+    setActiveModalEvent(event);
+    setInsightText('');
+    setIsLoadingInsight(true);
+    stopSpeech();
+    setIsSpeaking(false);
+
+    // Award +50 XP for deep-dive inspection
+    if (onAwardPoints) {
+      onAwardPoints(50, `timeline-${event.year}-${event.title.replace(/\s+/g, '-').toLowerCase()}`);
+    }
+
+    try {
+      const payload = {
+        title: event.title,
+        era: event.year,
+        location: event.location,
+        summary: event.desc
+      };
+      const data = await fetchTimelineInsight(payload, 'en');
+      setInsightText(data.insight);
+    } catch (err) {
+      console.warn('Falling back to archival record:', err);
+      setInsightText(event.desc);
+    } finally {
+      setIsLoadingInsight(false);
+    }
+  };
+
+  const handleToggleVoice = () => {
+    if (isSpeaking) {
+      stopSpeech();
+      setIsSpeaking(false);
+    } else {
+      setIsSpeaking(true);
+      const narration = insightText || activeModalEvent?.desc || '';
+      speakText(narration, 'en', () => setIsSpeaking(false));
+    }
+  };
+
+  const closeModal = () => {
+    stopSpeech();
+    setIsSpeaking(false);
+    setActiveModalEvent(null);
   };
 
   return (
@@ -117,11 +182,11 @@ export default function TimelineExplorer({ onAwardPoints }) {
                 </span>
 
                 <button
-                  onClick={() => onAwardPoints && onAwardPoints(15)}
-                  className="text-xs font-semibold text-neutral-300 hover:text-amber-400 flex items-center gap-1.5 cursor-pointer transition-colors"
+                  onClick={() => handleInspectSources(event)}
+                  className="text-xs font-semibold text-neutral-300 hover:text-amber-400 flex items-center gap-1.5 cursor-pointer transition-colors group/btn"
                 >
                   <span>Inspect Sources</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                 </button>
               </div>
             </div>
@@ -129,6 +194,80 @@ export default function TimelineExplorer({ onAwardPoints }) {
         </div>
 
       </section>
+
+      {/* 3. AI Historical Deep-Dive Modal */}
+      {activeModalEvent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="bg-[#0e1118] border border-amber-500/40 rounded-3xl w-full max-w-xl p-6 sm:p-8 shadow-2xl relative">
+            
+            {/* Modal Top Header */}
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div className="flex items-center gap-2 text-amber-400 font-serif font-bold">
+                <BookOpen className="w-5 h-5 text-amber-400" />
+                <span className="text-sm md:text-base">Imperial Codex Archives • {activeModalEvent.year}</span>
+              </div>
+              <button 
+                onClick={closeModal} 
+                className="p-1 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="my-5 space-y-3">
+              <h2 className="text-xl md:text-2xl font-bold font-serif text-white">
+                {activeModalEvent.title}
+              </h2>
+              <div className="flex items-center gap-2 text-xs text-amber-400/90 font-mono">
+                <MapPin className="w-3.5 h-3.5" />
+                <span>{activeModalEvent.location}</span>
+                <span>•</span>
+                <span className="text-emerald-400 font-semibold">+50 XP Archived</span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-neutral-900/90 border border-amber-500/20 text-xs md:text-sm leading-relaxed text-neutral-200 min-h-[110px] flex items-center">
+                {isLoadingInsight ? (
+                  <div className="flex items-center gap-2 text-xs text-amber-400 font-mono py-4">
+                    <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
+                    <span>Unrolling historical palm-leaf manuscripts...</span>
+                  </div>
+                ) : (
+                  <p className="font-serif italic text-neutral-200">
+                    "{insightText}"
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Action Controls */}
+            <div className="flex items-center justify-between pt-4 border-t border-white/10">
+              <button
+                onClick={handleToggleVoice}
+                disabled={isLoadingInsight}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-amber-500/30 text-amber-300 text-xs hover:bg-amber-500/10 cursor-pointer disabled:opacity-40 transition"
+              >
+                {isSpeaking ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
+                <span>{isSpeaking ? 'Stop Narration' : 'Listen Narration'}</span>
+              </button>
+
+              {setActiveTab && (
+                <button
+                  onClick={() => {
+                    closeModal();
+                    setActiveTab('characters');
+                  }}
+                  className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs transition cursor-pointer flex items-center gap-1.5 shadow-md shadow-amber-950/50"
+                >
+                  <Sparkles className="w-3.5 h-3.5" /> 
+                  <span>Consult Scholars</span>
+                </button>
+              )}
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }
